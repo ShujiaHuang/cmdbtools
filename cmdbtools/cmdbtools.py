@@ -17,25 +17,16 @@ if sys.version_info.major != 2:
 
 argparser = argparse.ArgumentParser(description = 'Manage authentication for CMDB API and do querying from command line.')
 commands = argparser.add_subparsers(dest = 'command', title = 'Commands')
+
 login_command = commands.add_parser('login', help = 'Authorize access to CMDB API.')
 token_command = commands.add_parser('print-access-token', help = 'Display access token for CMDB API.')
 
 login_command.add_argument('-k', '--token', type = str, required = True, dest = 'token',
                            help = 'CMDB API access key(Token).')
 
-query_gene_command = commands.add_parser('query-gene', help = 'Query by gene name or gene identifier.')
-query_variant_command = commands.add_parser('query-variant', help = 'Query variant by variant identifier or by chromosome name and chromosomal position.',
-        description = 'Query variant by identifier CHROM-POS-REF-ALT, or by chromosome name and chromosomal position.')
-
-annotate_command = commands.add_parser('annotate', help = 'Annotate input VCF.',
-        description = 'Uncompressed input VCF must be streamed to standard input. Uncompressed output VCF is streamed to standard output. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
+annotate_command = commands.add_parser('annotate', help = 'Annotate input VCF.', description = 'Input VCF file. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
 annotate_command.add_argument('-i', '--vcffile', metavar = 'name', type = str, required = True, dest = 'in_vcffile', help = 'input VCF file.')
 annotate_command.add_argument('-f', '--filter', metavar = 'expression', required = False, type = str, dest = 'filter', help = 'Filtering expression.')
-
-query_variant_command.add_argument('-v', '--variant', metavar = 'chrom-pos-ref-alt/rs#', type = str, dest = 'variant_id', help = 'Variant identifier CHROM-POS-REF-ALT or rs#.')
-query_variant_command.add_argument('-c', '--chromosome', metavar = 'name', type = str, dest = 'chromosome', help = 'Chromosome name.')
-query_variant_command.add_argument('-p', '--position', metavar = 'base-pair', type = int, dest = 'position', help = 'Position.')
-query_variant_command.add_argument('-o', '--output', required = False, choices = ['json', 'vcf'], default = 'json', dest = 'format', help = 'Output format.')
 
 
 USER_HOME = os.path.expanduser("~")
@@ -53,6 +44,15 @@ class CMDBException(Exception):
 
     def __str__(self):
         return self.message
+
+
+def load_version():
+    if not authaccess_exists():
+        print "No access tokens found. Please login first.\n"
+        return
+
+    tokenstore = read_tokenstore()
+    return tokenstore["version"]
 
 
 class requests(object):
@@ -157,7 +157,7 @@ def login(token):
         create_tokenstore()
 
     write_tokenstore(token)
-    print ("Done.\nYou are signed in.\n")
+    print ("Done.\nYou are signed in now.\n")
 
     return
 
@@ -220,49 +220,12 @@ def query_variant(chromosome, position):
     return _query_nonpaged(tokenstore["access_token"], query_url)
 
 
-def load_region(chromosome, position, filter):
-
-    if not authaccess_exists():
-        print 'No access tokens found. Please login first.'
-        return
-
-    credstore = read_tokenstore()
-    headers = { 'Authorization': 'Bearer {}'.format(credstore['all'][credstore['active']]['access_token']) }
-    start = position
-    end = start + 8000 # approx. 1,000 variants
-    region = { 'chromosome': chromosome, 'start': start, 'end': end, 'variants': dict() }
-    query_url = 'https://bravo.sph.umich.edu/freeze5/hg38/api/{}/region?chrom={}&start={}&end={}&vcf=0'.format(
-        CMDB_API_VERSION, chromosome, start, end)
-    if filter:
-        query_url = '{}'.format(query_url)
-
-    for line in _query_paged(headers, query_url):
-        region['variants'][line['variant_id']] = line
-
-    return region
-
-
-def load_version():
-    if not authaccess_exists():
-        print "No access tokens found. Please login first.\n"
-        return
-
-    tokenstore = read_tokenstore()
-    return tokenstore["version"]
-
-
 def annotate(infile, filter=None):
 
     if not authaccess_exists():
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
     data_version = load_version()
-
-    # fileformat_line = sys.stdin.readline()
-    # if not fileformat_line or not fileformat_line.startswith('##fileformat=VCF'):
-    #     return
-    #
-    # sys.stdout.write('{}\n'.format(fileformat_line.rstrip()))
 
     with gzip.open(infile) if infile.endswith('.gz') else open(infile) as I:
 
@@ -282,12 +245,11 @@ def annotate(infile, filter=None):
 
                 continue
 
-            in_fields = in_line.rstrip().split()[0:8]
+            in_fields = in_line.rstrip().split()[0:9]
             chromosome = in_fields[0]
             position = int(in_fields[1])
             ref = in_fields[3]
             alt = in_fields[4] # assume bi-allelic
-            info = in_fields[7]
 
             cmdb_variant = query_variant(chromosome, position)
             if cmdb_variant is None:
@@ -301,6 +263,7 @@ def annotate(infile, filter=None):
                     'CMDB_FILTER': 'CMDB_FILTER={}'.format(cmdb_variant[0]['filter_status'])
                 }
 
+                info = in_fields[7]
                 if info != '.':
                     for c in info.split(';'):
                         k = c.split('=')[0]
@@ -317,7 +280,6 @@ def annotate(infile, filter=None):
                     sys.stdout.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
                         chromosome, position, in_fields[2], ref, alt, in_fields[5], in_fields[6], info)
                     )
-
     return
 
 
