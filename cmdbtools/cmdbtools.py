@@ -245,7 +245,7 @@ def annotate(infile, filter=None):
 
                 continue
 
-            in_fields = in_line.rstrip().split()[0:9]
+            in_fields = in_line.rstrip().split()
             chromosome = in_fields[0]
             position = int(in_fields[1])
             ref = in_fields[3]
@@ -274,7 +274,7 @@ def annotate(infile, filter=None):
                 if len(in_fields) > 8:
 
                     sys.stdout.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
-                        chromosome, position, in_fields[2], ref, alt, in_fields[5], in_fields[6], info, in_fields[8])
+                        chromosome, position, in_fields[2], ref, alt, in_fields[5], in_fields[6], info, '\t'.join(in_fields[8:]))
                     )
                 else:
                     sys.stdout.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
