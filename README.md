@@ -1,4 +1,4 @@
-# cmdbtools
+# cmdbtools: A command line tool for CMDB varaints browser
 
 ## cmdbtools tutorial
 
