@@ -30,6 +30,16 @@ annotate_command.add_argument('-i', '--vcffile', metavar='name', type=str, requi
 annotate_command.add_argument('-f', '--filter', metavar='expression', required=False, type=str, dest='filter',
                               help='Filtering expression.')
 
+query_variant_command = commands.add_parser('query-variant',
+                                            help='Query variant by variant identifier or by chromosome name and chromosomal position.',
+                                            description='Query variant by identifier CHROM-POS-REF-ALT, or by chromosome name and chromosomal position.')
+query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome', help='Chromosome name.')
+query_variant_command.add_argument('-p', '--position', metavar='base-pair', type=int, dest='position', help='Position.')
+# query_variant_command.add_argument('-v', '--variant', metavar='chrom-pos-ref-alt/rs#', type=str, dest='variant_id',
+#                                    help='Variant identifier CHROM-POS-REF-ALT or rs#.')
+# query_variant_command.add_argument('-o', '--output', required=False, choices=['json', 'vcf'], default='json',
+#                                    dest='format', help='Output format.')
+
 USER_HOME = os.path.expanduser("~")
 CMDB_DIR = '.cmdb'
 CMDB_TOKENSTORE = 'authaccess.yaml'
