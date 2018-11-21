@@ -10,7 +10,7 @@ Enable API access from your Profile in [CMDB browser](https://db.cngb.org/cmdb).
 
 ## Login
 
-You need to login by CMDB API access key, which could be get from Profile->Genomics API, before using cmdbtools to do anything.
+You need to login by CMDB API access key before you use it, which could be got from Profile->Genomics API.
 
 ```bash
 python cmdbtools.py login -k your-genomics-api-key
@@ -22,7 +22,7 @@ If success you can use cmdbtools in your command line now.
 
 cmdbtools just provides `annotate` function for this moment. You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
 
-Download a list of example variants in VCF format from <tests/40samples.vcf.gz>.
+Download a list of example variants in VCF format from [40samples.vcf.gz](tests/40samples.vcf.gz).
 To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
 
 ```bash
