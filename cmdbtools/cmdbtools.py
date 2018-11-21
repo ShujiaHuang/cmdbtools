@@ -11,23 +11,24 @@ import yaml
 from urllib import urlencode
 from urllib2 import Request, urlopen, HTTPError
 
-
 if sys.version_info.major != 2:
     raise Exception('This tool supports only python2')
 
-argparser = argparse.ArgumentParser(description = 'Manage authentication for CMDB API and do querying from command line.')
-commands = argparser.add_subparsers(dest = 'command', title = 'Commands')
+argparser = argparse.ArgumentParser(description='Manage authentication for CMDB API and do querying from command line.')
+commands = argparser.add_subparsers(dest='command', title='Commands')
 
-login_command = commands.add_parser('login', help = 'Authorize access to CMDB API.')
-token_command = commands.add_parser('print-access-token', help = 'Display access token for CMDB API.')
+login_command = commands.add_parser('login', help='Authorize access to CMDB API.')
+token_command = commands.add_parser('print-access-token', help='Display access token for CMDB API.')
 
-login_command.add_argument('-k', '--token', type = str, required = True, dest = 'token',
-                           help = 'CMDB API access key(Token).')
+login_command.add_argument('-k', '--token', type=str, required=True, dest='token',
+                           help='CMDB API access key(Token).')
 
-annotate_command = commands.add_parser('annotate', help = 'Annotate input VCF.', description = 'Input VCF file. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
-annotate_command.add_argument('-i', '--vcffile', metavar = 'name', type = str, required = True, dest = 'in_vcffile', help = 'input VCF file.')
-annotate_command.add_argument('-f', '--filter', metavar = 'expression', required = False, type = str, dest = 'filter', help = 'Filtering expression.')
-
+annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
+                                       description='Input VCF file. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
+annotate_command.add_argument('-i', '--vcffile', metavar='name', type=str, required=True, dest='in_vcffile',
+                              help='input VCF file.')
+annotate_command.add_argument('-f', '--filter', metavar='expression', required=False, type=str, dest='filter',
+                              help='Filtering expression.')
 
 USER_HOME = os.path.expanduser("~")
 CMDB_DIR = '.cmdb'
@@ -106,7 +107,6 @@ def authaccess_exists():
 
 
 def create_tokenstore():
-
     p = os.path.join(USER_HOME, CMDB_DIR)
     if not os.path.isdir(p):
         os.mkdir(p, 0700)
@@ -119,7 +119,6 @@ def create_tokenstore():
 
 
 def read_tokenstore():
-
     token_path = os.path.join(USER_HOME, CMDB_DIR, CMDB_TOKENSTORE)
     with open(token_path, 'r') as I:
         tokenstore = yaml.load(I)
@@ -144,7 +143,6 @@ def write_tokenstore(token):
 
 
 def login(token):
-
     # Test the token is available or not
     test_url = "https://db.cngb.org/cmdb/api/v1.0/variant?token={}&type=position&query=chr17-41234470".format(token)
     cmdb_response = requests.get(test_url)
@@ -170,7 +168,7 @@ def print_access_token():
 def _query_paged(headers, url):
     page_no = 1
     while url:
-        cmdb_response = requests.get(url, headers = headers)
+        cmdb_response = requests.get(url, headers=headers)
         if cmdb_response.status_code != 200:
             if cmdb_response.status_code == 400:
                 raise CMDBException(cmdb_response.json().get('error', 'Failed to query data.'))
@@ -192,7 +190,6 @@ def _query_paged(headers, url):
 
 
 def _query_nonpaged(token, url):
-
     cmdb_response = requests.get("{}&token={}".format(url, token))
     if cmdb_response.status_code != 201:
         if cmdb_response.status_code == 403:
@@ -215,13 +212,11 @@ def query_variant(chromosome, position):
     if chromosome is None or position is None:
         raise CMDBException('Provide both "-c,--chromosome" and "-p,--position".')
 
-
     query_url = '{}/variant?&type=position&query={}-{}'.format(CMDB_API_MAIN_URL, chromosome, position)
     return _query_nonpaged(tokenstore["access_token"], query_url)
 
 
 def annotate(infile, filter=None):
-
     if not authaccess_exists():
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
@@ -237,10 +232,18 @@ def annotate(infile, filter=None):
 
                 elif in_line.startswith('#CHROM'):
 
-                    sys.stdout.write('##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from {}">\n'.format(data_version))
-                    sys.stdout.write('##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from {}">\n'.format(data_version))
-                    sys.stdout.write('##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">\n'.format(data_version))
-                    sys.stdout.write('##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from {}">\n'.format(data_version))
+                    sys.stdout.write(
+                        '##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from {}">\n'.format(
+                            data_version))
+                    sys.stdout.write(
+                        '##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from {}">\n'.format(
+                            data_version))
+                    sys.stdout.write(
+                        '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">\n'.format(
+                            data_version))
+                    sys.stdout.write(
+                        '##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from {}">\n'.format(
+                            data_version))
                     sys.stdout.write('{}\n'.format(in_line.rstrip()))
 
                 continue
@@ -249,7 +252,7 @@ def annotate(infile, filter=None):
             chromosome = in_fields[0]
             position = int(in_fields[1])
             ref = in_fields[3]
-            alt = in_fields[4] # assume bi-allelic
+            alt = in_fields[4]  # assume bi-allelic
 
             cmdb_variant = query_variant(chromosome, position)
             if cmdb_variant is None:
@@ -274,7 +277,8 @@ def annotate(infile, filter=None):
                 if len(in_fields) > 8:
 
                     sys.stdout.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
-                        chromosome, position, in_fields[2], ref, alt, in_fields[5], in_fields[6], info, '\t'.join(in_fields[8:]))
+                        chromosome, position, in_fields[2], ref, alt, in_fields[5], in_fields[6], info,
+                        '\t'.join(in_fields[8:]))
                     )
                 else:
                     sys.stdout.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
