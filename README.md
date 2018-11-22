@@ -18,6 +18,31 @@ python cmdbtools.py login -k your-genomics-api-key
 
 If success you can use cmdbtools in your command line now.
 
+## Query a single variant
+
+A single variant can be retrieved from CMDB by using `query-varaint`.
+
+Run `python cmdbtools.py query-variant -h` to see all available options.
+
+A example of quering a varaint by chromosome name and position.
+
+```bash
+python cmdbtools.py query-variant -c chr17 -p 41234470
+```
+
+and you will get something like:
+
+```bash
+##fileformat=VCFv4.2
+##FILTER=<ID=LowQual,Description="Low quality">
+##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from CMDB_hg19_v1.0">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+17	41234470	rs1060915&CD086610&COSM4416375	A	G	74.38	PASS	CMDB_AF=0.361763,CMDB_AC=4625,CMDB_AN=12757
+```
+
 ## Annotate your VCF
 
 cmdbtools just provides `annotate` function for this moment. You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.

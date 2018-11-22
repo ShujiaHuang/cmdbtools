@@ -32,7 +32,7 @@ annotate_command.add_argument('-f', '--filter', metavar='expression', required=F
 
 query_variant_command = commands.add_parser('query-variant',
                                             help='Query variant by variant identifier or by chromosome name and chromosomal position.',
-                                            description='Query variant by identifier CHROM-POS-REF-ALT, or by chromosome name and chromosomal position.')
+                                            description='Query variant by identifier chromosome name and chromosomal position.')
 query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome', help='Chromosome name.')
 query_variant_command.add_argument('-p', '--position', metavar='base-pair', type=int, dest='position', help='Position.')
 # query_variant_command.add_argument('-v', '--variant', metavar='chrom-pos-ref-alt/rs#', type=str, dest='variant_id',
@@ -47,6 +47,18 @@ CMDB_TOKENSTORE = 'authaccess.yaml'
 CMDB_DATASET_VERSION = 'CMDB_hg19_v1.0'
 CMDB_API_VERSION = 'v1.0'
 CMDB_API_MAIN_URL = 'https://db.cngb.org/cmdb/api/{}'.format(CMDB_API_VERSION)
+
+CMDB_VCF_HEADER = [
+    '##fileformat=VCFv4.2',
+    '##FILTER=<ID=LowQual,Description="Low quality">',
+    '##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from {}">'.format(
+        CMDB_DATASET_VERSION),
+    '##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from {}">'.format(
+        CMDB_DATASET_VERSION),
+    '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">'.format(CMDB_DATASET_VERSION),
+    '##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from {}">'.format(CMDB_DATASET_VERSION),
+    '#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO'
+]
 
 
 class CMDBException(Exception):
@@ -231,7 +243,6 @@ def annotate(infile, filter=None):
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
     data_version = load_version()
-
     with gzip.open(infile) if infile.endswith('.gz') else open(infile) as I:
 
         for in_line in I:
@@ -297,6 +308,30 @@ def annotate(infile, filter=None):
     return
 
 
+def run_query_variant(chromosome, position):
+
+    if not authaccess_exists():
+        raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
+
+    sys.stdout.write('%s\n' % '\n'.join(CMDB_VCF_HEADER))
+    for cmdb_variant in query_variant(chromosome, position):
+        vcf_line = [
+            cmdb_variant['chrom'],
+            cmdb_variant['pos'],
+            cmdb_variant['rsid'],
+            cmdb_variant['ref'],
+            cmdb_variant['alt'],
+            cmdb_variant['site_quality'],
+            cmdb_variant['filter_status'],
+            'CMDB_AF={},CMDB_AC={},CMDB_AN={}'.format(
+                cmdb_variant['allele_freq'],
+                cmdb_variant['allele_count'],
+                cmdb_variant['allele_num']
+            )
+        ]
+        sys.stdout.write('%s\n' % '\t'.join(map(str, vcf_line)))
+
+
 if __name__ == '__main__':
 
     args = argparser.parse_args()
@@ -308,7 +343,7 @@ if __name__ == '__main__':
             print_access_token()
 
         elif args.command == 'query-variant':
-            query_variant(args.chromosome, args.position)
+            run_query_variant(args.chromosome, args.position)
 
         elif args.command == 'annotate':
             annotate(args.in_vcffile, args.filter)
