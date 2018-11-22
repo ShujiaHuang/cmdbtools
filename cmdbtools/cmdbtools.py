@@ -284,8 +284,10 @@ def annotate(infile, filter=None):
                 cmdb_variant = cmdb_variant[0]
 
             # ignore `chr` in `variant` which could be compared with variant-id in CMDB
-            variant = '-'.join([chromosome.split('chr')[-1], str(position), ref, alt]).upper()
-            if cmdb_variant is None or (cmdb_variant and variant != cmdb_variant['variant_id']):
+            variants = ['-'.join([chromosome.split('chr')[-1], str(position), ref, a]).upper()
+                        for a in alt.split(',')]
+
+            if cmdb_variant is None or (cmdb_variant and (cmdb_variant['variant_id'] not in variants)):
                 sys.stdout.write('{}\n'.format('\t'.join(in_fields)))
 
             else:
