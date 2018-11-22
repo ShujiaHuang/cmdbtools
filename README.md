@@ -31,9 +31,10 @@ Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359
 
 **cmdbtools** is a command line tool for this CMDB variants browser.
 
-## cmdbtools tutorial
+## Tutorial
 
-The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** is a command line tool for CMDB.
+The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** 
+is a command line tool for CMDB.
 
 ## Setup
 
@@ -76,7 +77,7 @@ and you will get something like:
 
 ## Annotate your VCF
 
-cmdbtools just provides `annotate` function for this moment. You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
+You can annotate you VCF file with CMDB information by using `python cmdbtools.py annotate` command.
 
 Download a list of example variants in VCF format from [40samples.vcf.gz](tests/40samples.vcf.gz).
 To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
