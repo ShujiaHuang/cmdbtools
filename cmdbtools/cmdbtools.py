@@ -270,21 +270,30 @@ def annotate(infile, filter=None):
                 continue
 
             in_fields = in_line.rstrip().split()
+            if 'chr' not in in_fields[0].lower():
+                in_fields[0] = 'chr' + in_fields[0].lower()
+
             chromosome = in_fields[0]
             position = int(in_fields[1])
             ref = in_fields[3]
             alt = in_fields[4]  # assume bi-allelic
 
             cmdb_variant = query_variant(chromosome, position)
-            if cmdb_variant is None:
-                sys.stdout.write('{}\n'.format(in_line.rstrip()))
+            # Must just be one element in the `list`
+            if cmdb_variant:
+                cmdb_variant = cmdb_variant[0]
+
+            # ignore `chr` in `variant` which could be compared with variant-id in CMDB
+            variant = '-'.join([chromosome.split('chr')[-1], str(position), ref, alt]).upper()
+            if cmdb_variant is None or (cmdb_variant and variant != cmdb_variant['variant_id']):
+                sys.stdout.write('{}\n'.format('\t'.join(in_fields)))
 
             else:
                 new_info = {
-                    'CMDB_AN': 'CMDB_AN={}'.format(cmdb_variant[0]['allele_num']),
-                    'CMDB_AC': 'CMDB_AC={}'.format(cmdb_variant[0]['allele_count']),
-                    'CMDB_AF': 'CMDB_AF={}'.format(cmdb_variant[0]['allele_freq']),
-                    'CMDB_FILTER': 'CMDB_FILTER={}'.format(cmdb_variant[0]['filter_status'])
+                    'CMDB_AN': 'CMDB_AN={}'.format(cmdb_variant['allele_num']),
+                    'CMDB_AC': 'CMDB_AC={}'.format(cmdb_variant['allele_count']),
+                    'CMDB_AF': 'CMDB_AF={}'.format(cmdb_variant['allele_freq']),
+                    'CMDB_FILTER': 'CMDB_FILTER={}'.format(cmdb_variant['filter_status'])
                 }
 
                 info = in_fields[7]
@@ -316,7 +325,7 @@ def run_query_variant(chromosome, position):
     sys.stdout.write('%s\n' % '\n'.join(CMDB_VCF_HEADER))
     for cmdb_variant in query_variant(chromosome, position):
         vcf_line = [
-            cmdb_variant['chrom'],
+            'chr' + cmdb_variant['chrom'],
             cmdb_variant['pos'],
             cmdb_variant['rsid'],
             cmdb_variant['ref'],
@@ -343,7 +352,10 @@ if __name__ == '__main__':
             print_access_token()
 
         elif args.command == 'query-variant':
-            run_query_variant(args.chromosome, args.position)
+            if 'chr' not in args.chromosome.lower():
+                args.chromosome = 'chr' + args.chromosome.lower()
+
+            run_query_variant(args.chromosome.lower(), args.position)
 
         elif args.command == 'annotate':
             annotate(args.in_vcffile, args.filter)
