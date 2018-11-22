@@ -1,5 +1,36 @@
 # cmdbtools: A command line tool for CMDB varaints browser
 
+## Introduction
+
+China is the most populous country and the second largest economy in the world. However, 
+the construction of Chinese genome database is in slow progress. At present, among the 
+world's large-scale international and national genome sequencing projects, such as 1KGP, 
+Genomics England, Genome of the Netherlands, ExAC are mostly biased towards the construction
+of a genomic baseline for European populations. In those projects, while the sample size goes
+up to hundreds of thousands for samples with european ancestry in those database, the sequen-
+cing Chinese samples is no more than a thousand.
+
+Since a high-quality genomic baseline database serves as an important control for medical 
+research and population-oriented clinical and drug applications, the Chinese millionome
+database (CMDB) is developed to fill the gap.
+
+The [Chinese Millionome Database(CMDB)](https://db.cngb.org/cmdb/) is a unique large-scale 
+Chinese genomics database produced by BGI and hosted in the National GeneBank. The CMDB delivers
+peridical and useful variation information and scientific insights derived from the analysis of
+millions of Chinese sequencing data. The results aim to promote genetic research and precision
+medicine actions in China.
+
+The delivering information includes any of detected variants and the corresponding allele frequency,
+annotation, frequency comparison to the global populations from existing databases, etc.
+
+Benchmarking detail and methods are described in our *Cell* paper:
+
+Liu, S. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
+Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359. 
+[DOI:https://doi.org/10.1016/j.cell.2018.08.016](https://doi.org/10.1016/j.cell.2018.08.016)
+
+**cmdbtools** is a command line tool for this CMDB variants browser.
+
 ## cmdbtools tutorial
 
 The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** is a command line tool for CMDB.
@@ -92,3 +123,9 @@ chr21   9413995 .       C       T       9632.44 .       AC=29;AF=0.363;AN=80;Bas
 chr21   9413996 .       A       G       41996.48        .       AC=71;AF=0.888;AN=80;BaseQRankSum=-1.242e+00;CMDB_AC=3308;CMDB_AF=0.688533;CMDB_AN=4790;CMDB_FILTER=PASS
 chr21   9414003 .       T       C       4256.54 .       AC=19;AF=0.238;AN=80;BaseQRankSum=-6.030e-01
 ```
+
+## Citation
+
+Siyang Liu, Shujia Huang. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
+Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359. 
+[DOI:https://doi.org/10.1016/j.cell.2018.08.016](https://doi.org/10.1016/j.cell.2018.08.016)
