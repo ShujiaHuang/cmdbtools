@@ -1,4 +1,4 @@
-# cmdbtools: A command line tool for CMDB varaints browser
+# cmdbtools: A command line tools for CMDB varaints browser
 
 ## Introduction
 
@@ -50,13 +50,13 @@ Enable API access from your Profile in [CMDB browser](https://db.cngb.org/cmdb).
 
 ## Login
 
-You need to login by CMDB API access key before you use it, which could be got from Profile->Genomics API.
+You need to login by CMDB API access key before you use it, which could be found in webpage Profile->Genomics API.
 
 ```bash
 cmdbtools login -k your-genomics-api-key
 ```
 
-If success you can use cmdbtools in your command line now.
+If success, you can use cmdbtools in your command line.
 
 ## Query a single variant
 
@@ -85,7 +85,7 @@ and you will get something like:
 
 ## Annotate your VCF
 
-You can annotate you VCF file with CMDB information by using `python cmdbtools.py annotate` command.
+You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
 
 Download a list of example variants in VCF format from [samples.vcf.gz](tests/samples.vcf.gz).
 To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
