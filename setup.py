@@ -11,7 +11,7 @@ except ImportError:
 
 
 DESCRIPTION = "cmdbtools: A command line tools for CMDB variant browser."
-DISTNAME = 'CMDBtools'
+DISTNAME = 'cmdbtools'
 MAINTAINER = 'Shujia Huang (at) BGI'
 MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
