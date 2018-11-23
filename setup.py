@@ -38,7 +38,7 @@ if __name__ == "__main__":
               'PyYAML',
           ],
 
-          scripts = [],
+          # scripts = ['cmdbtools/cmdbtools.py'],
           entry_points = {
 
              'console_scripts': [

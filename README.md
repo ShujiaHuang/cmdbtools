@@ -36,6 +36,14 @@ Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359
 The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** 
 is a command line tool for CMDB.
 
+## Install
+
+Install the development version from github:
+
+```bash
+pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
+```
+
 ## Setup
 
 Enable API access from your Profile in [CMDB browser](https://db.cngb.org/cmdb).

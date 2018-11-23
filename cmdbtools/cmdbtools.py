@@ -343,8 +343,8 @@ def run_query_variant(chromosome, position):
         sys.stdout.write('%s\n' % '\t'.join(map(str, vcf_line)))
 
 
-if __name__ == '__main__':
-
+def main():
+    # entry function
     args = argparser.parse_args()
     try:
         if args.command == 'login':
@@ -364,3 +364,8 @@ if __name__ == '__main__':
 
     except CMDBException as e:
         print (e)
+
+
+if __name__ == '__main__':
+    main()
+
