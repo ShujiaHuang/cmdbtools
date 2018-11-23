@@ -87,7 +87,7 @@ and you will get something like:
 
 You can annotate you VCF file with CMDB information by using `python cmdbtools.py annotate` command.
 
-Download a list of example variants in VCF format from [40samples.vcf.gz](tests/40samples.vcf.gz).
+Download a list of example variants in VCF format from [samples.vcf.gz](tests/samples.vcf.gz).
 To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
 
 ```bash
