@@ -36,9 +36,9 @@ Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359
 The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** 
 is a command line tool for CMDB.
 
-## Install
+## Installation
 
-Install the development version from github:
+You can just install the development version from github for this moment, by running:
 
 ```bash
 pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
@@ -53,7 +53,7 @@ Enable API access from your Profile in [CMDB browser](https://db.cngb.org/cmdb).
 You need to login by CMDB API access key before you use it, which could be got from Profile->Genomics API.
 
 ```bash
-python cmdbtools.py login -k your-genomics-api-key
+cmdbtools login -k your-genomics-api-key
 ```
 
 If success you can use cmdbtools in your command line now.
@@ -62,12 +62,12 @@ If success you can use cmdbtools in your command line now.
 
 A single variant can be retrieved from CMDB by using `query-varaint`.
 
-Run `python cmdbtools.py query-variant -h` to see all available options.
+Run `cmdbtools query-variant -h` to see all available options.
 
 A example of quering a varaint by chromosome name and position.
 
 ```bash
-python cmdbtools.py query-variant -c chr17 -p 41234470
+cmdbtools query-variant -c chr17 -p 41234470
 ```
 
 and you will get something like:
@@ -91,7 +91,7 @@ Download a list of example variants in VCF format from [40samples.vcf.gz](tests/
 To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
 
 ```bash
-python cmdbtools.py annotate -i 40samples.vcf.gz > 40samples_CMDB.vcf
+cmdbtools annotate -i 40samples.vcf.gz > 40samples_CMDB.vcf
 ```
 
 It'll take about 2 min to funnish the annotation for about 3,000 variants.
