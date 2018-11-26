@@ -33,12 +33,12 @@ Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359
 
 ## Tutorial
 
-The CMDB variant browser allows authorized access to its data through an Genomics API and **cmdbtools** 
-is a command line tool for CMDB.
+CMDB variant browser allows authorized access its data through an Genomics API and **cmdbtools** 
+is a convenient command line tools for this purpose.
 
 ## Installation
 
-You can just install the development version from github for this moment, by running:
+You can install the development version from github for this moment, by running:
 
 ```bash
 pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
@@ -46,17 +46,19 @@ pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
 
 ## Setup
 
-Enable API access from your Profile in [CMDB browser](https://db.cngb.org/cmdb).
+Please enable your API access from Profile in [CMDB browser](https://db.cngb.org/cmdb) before using **cmdbtools**. 
 
 ## Login
 
-You need to login by CMDB API access key before you use it, which could be found in webpage Profile->Genomics API.
+Login with `cmdbtools` first by using CMDB API access key, which could be found from Profile->Genomics API if you have applied it.
+
+![cmdb_genomics_api](assets/figures/cmdb_genomics_api.png)
 
 ```bash
 cmdbtools login -k your-genomics-api-key
 ```
 
-If success, you can use cmdbtools in your command line.
+If success, that means you can use CMDB as one of database in command line mode.
 
 ## Query a single variant
 
@@ -64,13 +66,13 @@ A single variant can be retrieved from CMDB by using `query-varaint`.
 
 Run `cmdbtools query-variant -h` to see all available options.
 
-A example of quering a varaint by chromosome name and position.
+Here is an example for quering a varaint by chromosome name and position.
 
 ```bash
 cmdbtools query-variant -c chr17 -p 41234470
 ```
 
-and you will get something like:
+and you will get something looks like below:
 
 ```bash
 ##fileformat=VCFv4.2
@@ -83,27 +85,27 @@ and you will get something like:
 17	41234470	rs1060915&CD086610&COSM4416375	A	G	74.38	PASS	CMDB_AF=0.361763,CMDB_AC=4625,CMDB_AN=12757
 ```
 
-## Annotate your VCF
+## Annotate your VCF files
 
 You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
 
 Download a list of example variants in VCF format from [samples.vcf.gz](tests/samples.vcf.gz).
-To annotate this list of variants with allele frequences from CMDB, you can run the following command on Linux or Mac OS.
+To annotate this list of variants with allele frequences from CMDB, you can just run the following command on Linux or Mac OS.
 
 ```bash
 cmdbtools annotate -i 40samples.vcf.gz > 40samples_CMDB.vcf
 ```
 
-It'll take about 2 min to funnish the annotation for about 3,000 variants.
+It'll take about 2 or 3 mins to complete about 3,000 variants' annotation.
 
-And you will get 4 new fields of CMDB annotate information in VCF INFO mark as :
+After that you will get 4 new fields of CMDB's annotate information in VCF INFO:
 
 * `CMDB_AF`: Allele frequece in CMDB;
 * `CMDB_AN`: Coverage in CMDB in population level;
 * `CMDB_AC`: Allele count in population level in CMDB;
 * `CMDB_FILTER`: Filter status in CMDB
 
-```
+```bash
 ##fileformat=VCFv4.2
 ##ALT=<ID=NON_REF,Description="Represents any possible alternative allele at this location">
 ##FILTER=<ID=LowQual,Description="Low quality">
@@ -134,6 +136,8 @@ chr21   9414003 .       T       C       4256.54 .       AC=19;AF=0.238;AN=80;Bas
 ```
 
 ## Citation
+
+**Please citate the paper below if you use CMDB for your projects**.
 
 Siyang Liu, Shujia Huang. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
 Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359. 
