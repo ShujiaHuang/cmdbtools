@@ -58,7 +58,7 @@ Login with `cmdbtools` first by using CMDB API access key, which could be found 
 cmdbtools login -k your-genomics-api-key
 ```
 
-If success, that means you can use CMDB as one of database in command line mode.
+If success, that means you can use CMDB as one of your varaints database in command line mode.
 
 ## Query a single variant
 
@@ -89,11 +89,11 @@ and you will get something looks like below:
 
 You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
 
-Download a list of example variants in VCF format from [samples.vcf.gz](tests/samples.vcf.gz).
+Download a list of example variants in VCF format from [multiple_samples.vcf.gz](tests/multiple_samples.vcf.gz).
 To annotate this list of variants with allele frequences from CMDB, you can just run the following command on Linux or Mac OS.
 
 ```bash
-cmdbtools annotate -i 40samples.vcf.gz > 40samples_CMDB.vcf
+cmdbtools annotate -i multiple_samples.vcf.gz > multiple_samples_CMDB.vcf
 ```
 
 It'll take about 2 or 3 mins to complete about 3,000 variants' annotation.
@@ -137,7 +137,7 @@ chr21   9414003 .       T       C       4256.54 .       AC=19;AF=0.238;AN=80;Bas
 
 ## Citation
 
-**Please citate the paper below if you use CMDB for your projects**.
+**Please citate the paper below if you use CMDB in your publications/projects**.
 
 Siyang Liu, Shujia Huang. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
 Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359. 
