@@ -60,6 +60,14 @@ cmdbtools login -k your-genomics-api-key
 
 If success, that means you can use CMDB as one of your varaints database in command line mode.
 
+## Logout
+
+If you want to logout, just simply run the command below:
+
+```bash
+cmdbtool logout
+```
+
 ## Query a single variant
 
 A single variant can be retrieved from CMDB by using `query-varaint`.
