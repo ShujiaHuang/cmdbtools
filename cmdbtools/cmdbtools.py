@@ -18,6 +18,7 @@ argparser = argparse.ArgumentParser(description='Manage authentication for CMDB 
 commands = argparser.add_subparsers(dest='command', title='Commands')
 
 login_command = commands.add_parser('login', help='Authorize access to CMDB API.')
+logout_command = commands.add_parser('logout', help='Logout CMDB.')
 token_command = commands.add_parser('print-access-token', help='Display access token for CMDB API.')
 
 login_command.add_argument('-k', '--token', type=str, required=True, dest='token',
@@ -177,12 +178,30 @@ def login(token):
         create_tokenstore()
 
     write_tokenstore(token)
-    print ("Done.\nYou are signed in now.\n")
+    sys.stdout.write("Done.\nYou are signed in now.\n")
+
+    return
+
+
+def logout():
+    # logout by delete the tokenstore file
+    if not authaccess_exists():
+        sys.stderr.write("Don't find any your access token, no need to logout.\n")
+        return
+
+    file_path = os.path.join(USER_HOME, CMDB_DIR, CMDB_TOKENSTORE)
+    os.remove(file_path)
+    sys.stdout.write("Done.\nLogout successful.\n")
 
     return
 
 
 def print_access_token():
+
+    if not authaccess_exists():
+        sys.stderr.write('No access tokens found. Print nothing.\n')
+        return
+
     tokenstore = read_tokenstore()
     print (tokenstore['access_token'])
 
@@ -227,7 +246,7 @@ def _query_nonpaged(token, url):
 
 def query_variant(chromosome, position):
     if not authaccess_exists():
-        print 'No access tokens found. Please login first.'
+        sys.stderr.write('No access tokens found. Please login first.\n')
         return
 
     tokenstore = read_tokenstore()
@@ -349,6 +368,9 @@ def main():
     try:
         if args.command == 'login':
             login(args.token)
+
+        elif args.command == 'logout':
+            logout()
 
         elif args.command == 'print-access-token':
             print_access_token()
