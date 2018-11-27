@@ -50,7 +50,7 @@ Please enable your API access from Profile in [CMDB browser](https://db.cngb.org
 
 ## Login
 
-Login with `cmdbtools` first by using CMDB API access key, which could be found from Profile->Genomics API if you have apply for it.
+Login with `cmdbtools` by using CMDB API access key, which could be found from Profile->Genomics API if you have apply for it.
 
 ![cmdb_genomics_api](assets/figures/cmdb_genomics_api.png)
 
