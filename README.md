@@ -137,8 +137,8 @@ chr21   9414003 .       T       C       4256.54 .       AC=19;AF=0.238;AN=80;Bas
 
 ## Citation
 
-**If you use CMDB in your scientific publication, we would appreciate citation:**
+**If you use CMDB in your scientific publication, we would appreciate citation this paper:**
 
-* [1] Siyang Liu, Shujia Huang. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
+Siyang Liu, Shujia Huang. et al.(2018) Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, 
 Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359. 
 [DOI:https://doi.org/10.1016/j.cell.2018.08.016](https://doi.org/10.1016/j.cell.2018.08.016)
