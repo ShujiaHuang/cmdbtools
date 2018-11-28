@@ -31,7 +31,7 @@ Patterns of Viral Infections, and Chinese Population History. *Cell*, 2, 347-359
 
 **cmdbtools** is a command line tool for this CMDB variants browser.
 
-## Tutorial
+## Quick start
 
 CMDB variant browser allows authorized access its data through an Genomics API and **cmdbtools** 
 is a convenient command line tools for this purpose.
