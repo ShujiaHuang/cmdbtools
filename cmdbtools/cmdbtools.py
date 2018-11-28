@@ -32,10 +32,8 @@ login_command.add_argument('-k', '--token', type=str, required=True, dest='token
 
 annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
                                        description='Input VCF file. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
-annotate_command.add_argument('-i', '--vcffile', metavar='name', type=str, required=True, dest='in_vcffile',
+annotate_command.add_argument('-i', '--vcffile', metavar='VCF_FILE', type=str, required=True, dest='in_vcffile',
                               help='input VCF file.')
-annotate_command.add_argument('-f', '--filter', metavar='expression', required=False, type=str, dest='filter',
-                              help='Filtering expression.')
 
 query_variant_command = commands.add_parser('query-variant',
                                             help='Query variant by variant identifier or by chromosome name and chromosomal position.',
