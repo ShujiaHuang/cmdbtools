@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+"""A command line tools for CMDB variants browser
+
+Author: Shujia Huang
+Date: 2018-11-22
+
+"""
 
 import argparse
 import os
