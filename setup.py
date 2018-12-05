@@ -17,7 +17,7 @@ MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/ShujiaHuang/cmdbtools'
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 
 if __name__ == "__main__":
@@ -50,9 +50,7 @@ if __name__ == "__main__":
               'Programming Language :: Python :: 2.7',
               'License :: OSI Approved :: BSD License',
               'Topic :: Scientific/Engineering :: Bio-Informatics',
-              'Topic :: Scientific/Engineering :: Tools',
-              'Topic :: Multimedia :: CMDB',
               'Operating System :: POSIX',
-              'Operating System :: Linux/Unix',
+              'Operating System :: POSIX :: Linux',
               'Operating System :: MacOS'],
           )
