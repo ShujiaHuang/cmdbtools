@@ -3,3 +3,6 @@
 .idea/
 tmp/
 venv/
+
+*.egg-info/
+dist/
