@@ -38,7 +38,13 @@ is a convenient command line tools for this purpose.
 
 ## Installation
 
-You can install the development version from github for this moment, by running:
+Install the released version, just do:
+
+```bash
+pip install cmdbtools
+```
+
+You may instead want to install the development version from github, by running:
 
 ```bash
 pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
