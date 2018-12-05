@@ -386,7 +386,7 @@ def main():
             run_query_variant(args.chromosome.lower(), args.position)
 
         elif args.command == 'annotate':
-            annotate(args.in_vcffile, args.filter)
+            annotate(args.in_vcffile, filter=None)
 
     except CMDBException as e:
         print (e)

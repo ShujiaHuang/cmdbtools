@@ -17,7 +17,7 @@ MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/ShujiaHuang/cmdbtools'
-VERSION = "1.0.1"
+VERSION = "1.0.3"
 
 
 if __name__ == "__main__":
@@ -28,7 +28,7 @@ if __name__ == "__main__":
           maintainer=MAINTAINER,
           maintainer_email=MAINTAINER_EMAIL,
           description=DESCRIPTION,
-          long_description=(open("README.md").read()),
+          long_description=(open("README.rst").read()),
           license=LICENSE,
           url=URL,
           download_url=DOWNLOAD_URL,
