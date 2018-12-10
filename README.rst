@@ -163,7 +163,7 @@ of ``chrom   position`` and ``chrom    start   end``:
     chr22   17690409    rs362129    G   A   32.3    PASS    CMDB_AF=0.065438,CMDB_AC=686,CMDB_AN=10236
 
 Actrually you can use ``-c`` ``-p`` and ``-l`` simultaneously if you
-like. And ``positions.list`` could just contain one single positions.
+like. And ``positions.list`` could just contain one single position.
 
 .. code:: bash
 

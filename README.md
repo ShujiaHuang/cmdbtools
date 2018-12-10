@@ -138,7 +138,7 @@ chr22	17669245	rs116020027	G	T	30.3	PASS	CMDB_AF=0.003453,CMDB_AC=43,CMDB_AN=112
 chr22	17690409	rs362129	G	A	32.3	PASS	CMDB_AF=0.065438,CMDB_AC=686,CMDB_AN=10236
 ```
 
-Actrually you can use `-c` `-p` and `-l` simultaneously if you like. And `positions.list` could just contain one single positions.
+Actrually you can use `-c` `-p` and `-l` simultaneously if you like. And `positions.list` could just contain one single position.
 
 ```bash
 cmdbtools query-variant -c 22 -p 46616520 -l positions.list > result.vcf
