@@ -141,7 +141,7 @@ chr22	17690409	rs362129	G	A	32.3	PASS	CMDB_AF=0.065438,CMDB_AC=686,CMDB_AN=10236
 Actrually you can use `-c` `-p` and `-l` simultaneously if you like. And `positions.list` could just contain one single positions.
 
 ```bash
-cmdbtools query-variant -c  -l positions.list > result.vcf
+cmdbtools query-variant -c 22 -p 46616520 -l positions.list > result.vcf
 ```
 
 ## Annotate your VCF files
