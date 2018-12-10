@@ -14,6 +14,7 @@ import gzip
 import json
 import yaml
 
+from datetime import datetime
 from urllib import urlencode
 from urllib2 import Request, urlopen, HTTPError
 
@@ -31,15 +32,26 @@ login_command.add_argument('-k', '--token', type=str, required=True, dest='token
                            help='CMDB API access key(Token).')
 
 annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
-                                       description='Input VCF file. Multi-allelic variant records in input VCF must be split into multiple bi-allelic variant records.')
+                                       description='Input VCF file. Multi-allelic variant records in input VCF must be '
+                                                   'split into multiple bi-allelic variant records.')
 annotate_command.add_argument('-i', '--vcffile', metavar='VCF_FILE', type=str, required=True, dest='in_vcffile',
                               help='input VCF file.')
 
 query_variant_command = commands.add_parser('query-variant',
-                                            help='Query variant by variant identifier or by chromosome name and chromosomal position.',
-                                            description='Query variant by identifier chromosome name and chromosomal position.')
-query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome', help='Chromosome name.')
-query_variant_command.add_argument('-p', '--position', metavar='base-pair', type=int, dest='position', help='Position.')
+                                            help='Query variant by variant identifier or by chromosome name and '
+                                                 'chromosomal position.',
+                                            description='Query variant by identifier chromosome name and chromosomal '
+                                                        'position.')
+query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome',
+                                   help='Chromosome name.', default=None)
+query_variant_command.add_argument('-p', '--position', metavar='genome-position', type=int, dest='position',
+                                   help='Genome position.', default=None)
+query_variant_command.add_argument('-l', '--positions', metavar='File-contain-a-list-of-genome-positions',
+                                   type=str, dest='positions',
+                                   help='Genome positions list in a file. One for each line. You can input single '
+                                        'position by -c and -p or using -l for multiple poisitions in a single file, '
+                                        'could be .gz file',
+                                   default=None)
 # query_variant_command.add_argument('-v', '--variant', metavar='chrom-pos-ref-alt/rs#', type=str, dest='variant_id',
 #                                    help='Variant identifier CHROM-POS-REF-ALT or rs#.')
 # query_variant_command.add_argument('-o', '--output', required=False, choices=['json', 'vcf'], default='json',
@@ -342,32 +354,41 @@ def annotate(infile, filter=None):
     return
 
 
-def run_query_variant(chromosome, position):
+def run_query_variant(positions):
 
     if not authaccess_exists():
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
     sys.stdout.write('%s\n' % '\n'.join(CMDB_VCF_HEADER))
-    for cmdb_variant in query_variant(chromosome, position):
-        vcf_line = [
-            'chr' + cmdb_variant['chrom'],
-            cmdb_variant['pos'],
-            cmdb_variant['rsid'],
-            cmdb_variant['ref'],
-            cmdb_variant['alt'],
-            cmdb_variant['site_quality'],
-            cmdb_variant['filter_status'],
-            'CMDB_AF={},CMDB_AC={},CMDB_AN={}'.format(
-                cmdb_variant['allele_freq'],
-                cmdb_variant['allele_count'],
-                cmdb_variant['allele_num']
-            )
-        ]
-        sys.stdout.write('%s\n' % '\t'.join(map(str, vcf_line)))
+    for chromosome, position in positions:
+
+        variants = query_variant(chromosome, position)
+        if variants is None:
+            continue
+
+        for cmdb_variant in variants:
+            vcf_line = [
+                'chr' + cmdb_variant['chrom'],
+                cmdb_variant['pos'],
+                cmdb_variant['rsid'],
+                cmdb_variant['ref'],
+                cmdb_variant['alt'],
+                cmdb_variant['site_quality'],
+                cmdb_variant['filter_status'],
+                'CMDB_AF={},CMDB_AC={},CMDB_AN={}'.format(
+                    cmdb_variant['allele_freq'],
+                    cmdb_variant['allele_count'],
+                    cmdb_variant['allele_num']
+                )
+            ]
+            sys.stdout.write('%s\n' % '\t'.join(map(str, vcf_line)))
 
 
 def main():
     # entry function
+
+    START_TIME = datetime.now()
+
     args = argparser.parse_args()
     try:
         if args.command == 'login':
@@ -380,16 +401,59 @@ def main():
             print_access_token()
 
         elif args.command == 'query-variant':
-            if 'chr' not in args.chromosome.lower():
-                args.chromosome = 'chr' + args.chromosome.lower()
 
-            run_query_variant(args.chromosome.lower(), args.position)
+            if not ((args.chromosome and args.position) or args.positions):
+                sys.stderr.write("[Error] Couldn't find any positions. You must input single position by '-c and -p' "
+                                 "or multiple positions in one single file by '-l'.\n")
+                sys.exit(1)
+
+            positions = []
+            if args.chromosome and args.position:
+                if 'chr' not in args.chromosome.lower():
+                    args.chromosome = 'chr' + args.chromosome.lower()
+
+                positions.append([args.chromosome.lower(), args.position])
+
+            if args.positions:
+                # Fetching positions from a single file
+                with gzip.open(args.positions) if args.positions.endswith('.gz') else open(args.positions) as P:
+                    for line in P:
+
+                        # skip header information
+                        if line.startswith("#"):
+                            continue
+
+                        col = line.strip().split()
+
+                        if 'chr' not in col[0].lower():
+                            col[0] = 'chr' + col[0].lower()
+
+                        if len(col) == 2:
+                            positions.append([col[0], int(col[1])])
+
+                        elif len(col) == 3:
+                            start, end = map(int, col[1:])
+                            for position in range(start, end+1):
+                                positions.append([col[0], position])
+                        else:
+                            sys.stderr.write("[Error] Unexpected format hit %s in %s.\n" % (line, args.positions))
+
+            # sorted and query positions
+            positions.sort(key=lambda A:(A[0], A[1]))
+            run_query_variant(positions)
+
+        elif args.command == 'query-variants':
+            pass
 
         elif args.command == 'annotate':
             annotate(args.in_vcffile, filter=None)
 
     except CMDBException as e:
         print (e)
+
+
+    elasped_time = datetime.now() -START_TIME
+    sys.stderr.write("** Query CMDB done, %d seconds elapsed **\n" % (elasped_time.seconds))
 
 
 if __name__ == '__main__':

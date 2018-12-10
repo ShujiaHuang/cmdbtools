@@ -76,11 +76,13 @@ cmdbtool logout
 
 ## Query a single variant
 
-A single variant can be retrieved from CMDB by using `query-varaint`.
+Variants could be retrieved from CMDB by using `query-varaint`.
 
-Run `cmdbtools query-variant -h` to see all available options.
+Run `cmdbtools query-variant -h` to see all available options. There's two different ways to retrive variants.
+One is to use `-c` and `-p` parameters for single variant, the other way is for multiple positions, which could
+be used by `-l`
 
-Here is an example for quering a varaint by chromosome name and position.
+Here is an example for quering single varaint by chromosome name and position.
 
 ```bash
 cmdbtools query-variant -c chr17 -p 41234470
@@ -97,6 +99,49 @@ and you will get something looks like below:
 ##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from CMDB_hg19_v1.0">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
 17	41234470	rs1060915&CD086610&COSM4416375	A	G	74.38	PASS	CMDB_AF=0.361763,CMDB_AC=4625,CMDB_AN=12757
+```
+
+For quering multiple varants.
+
+```bash
+cmdbtools query-variant -l positions.list > result.vcf
+```
+
+Format for [positions.list](tests/positions.list), could be a mixture of `chrom   position` and `chrom    start   end`:
+
+```
+#CHROM  POS
+chr22	17662378
+chr22	17662408
+22	17662442
+22	17662444
+22	17662699
+22	17662729
+22	17690496
+22	17662353    17663671
+22	17669209    17669357
+```
+
+`result.vcf` is VCF format and looks like below:
+
+```
+##fileformat=VCFv4.2
+##FILTER=<ID=LowQual,Description="Low quality">
+##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from CMDB_hg19_v1.0">
+##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from CMDB_hg19_v1.0">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr22	17662699	rs58754958	A	G	59.86	PASS	CMDB_AF=0.031047,CMDB_AC=441,CMDB_AN=13553
+chr22	17662793	rs7289170	A	G	64.23	PASS	CMDB_AF=0.050419,CMDB_AC=842,CMDB_AN=16135
+chr22	17669245	rs116020027	G	T	30.3	PASS	CMDB_AF=0.003453,CMDB_AC=43,CMDB_AN=11280
+chr22	17690409	rs362129	G	A	32.3	PASS	CMDB_AF=0.065438,CMDB_AC=686,CMDB_AN=10236
+```
+
+Actrually you can use `-c` `-p` and `-l` simultaneously if you like. And `positions.list` could just contain one single positions.
+
+```bash
+cmdbtools query-variant -c  -l positions.list > result.vcf
 ```
 
 ## Annotate your VCF files
