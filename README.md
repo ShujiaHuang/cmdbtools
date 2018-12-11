@@ -146,23 +146,21 @@ cmdbtools query-variant -c 22 -p 46616520 -l positions.list > result.vcf
 
 ## Annotate your VCF files
 
-You can annotate you VCF file with CMDB information by using `cmdbtools annotate` command.
+Annotate your VCF file with CMDB by using `cmdbtools annotate` command.
 
 Download a list of example variants in VCF format from [multiple_samples.vcf.gz](tests/multiple_samples.vcf.gz).
-To annotate this list of variants with allele frequences from CMDB, you can just run the following command on Linux or Mac OS.
+To annotate this list of variants with allele frequences from CMDB, you can just run the following command in Linux or Mac OS.
 
 ```bash
 cmdbtools annotate -i multiple_samples.vcf.gz > multiple_samples_CMDB.vcf
 ```
 
-It'll take about 2 or 3 mins to complete about 3,000 variants' annotation.
-
-After that you will get 4 new fields of CMDB's annotate information in VCF INFO:
+It'll take about 2 or 3 minutes to complete 3,000 variants' annotation. Then you will get 4 new fields with the information of CMDB in VCF INFO:
 
 * `CMDB_AF`: Allele frequece in CMDB;
 * `CMDB_AN`: Coverage in CMDB in population level;
 * `CMDB_AC`: Allele count in population level in CMDB;
-* `CMDB_FILTER`: Filter status in CMDB
+* `CMDB_FILTER`: Filter status in CMDB.
 
 ```bash
 ##fileformat=VCFv4.2
