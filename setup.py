@@ -26,6 +26,15 @@ VERSION = "1.0.4"
 if __name__ == "__main__":
 
     long_description = os.path.split(os.path.realpath(__file__))[0] + "/README.rst"
+    requirements_file = os.path.split(os.path.realpath(__file__))[0] + "/requirements.txt"
+
+    print "******** %s " % os.path.split(os.path.realpath(__file__))[0]
+
+    requirements = []
+    with open(requirements_file) as I:
+      for line in I:
+        requirements.append(line.strip())
+
     setup(name=DISTNAME,
           version=VERSION,
           author=MAINTAINER,
@@ -39,9 +48,7 @@ if __name__ == "__main__":
           download_url=DOWNLOAD_URL,
           packages=find_packages(),
           include_package_data=True,
-          install_requires=[
-              'PyYAML',
-          ],
+          install_requires=requirements,
 
           # scripts = ['cmdbtools/cmdbtools.py'],
           entry_points = {
