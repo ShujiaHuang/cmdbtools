@@ -38,7 +38,7 @@ is a convenient command line tools for this purpose.
 
 ## Installation
 
-Install the released version, just do:
+Install the released version by `pip`:
 
 ```bash
 pip install cmdbtools
@@ -64,11 +64,11 @@ Login with `cmdbtools` by using CMDB API access key, which could be found from P
 cmdbtools login -k your-genomics-api-key
 ```
 
-If success, that means you can use CMDB as one of your varaints database in command line mode.
+If everything goes smoothly, **means you can use CMDB as one of your varaints database in command line mode**.
 
 ## Logout
 
-If you want to logout, just simply run the command below:
+Logout `cmdbtools` by simply run the command below:
 
 ```bash
 cmdbtool logout
@@ -78,11 +78,11 @@ cmdbtool logout
 
 Variants could be retrieved from CMDB by using `query-varaint`.
 
-Run `cmdbtools query-variant -h` to see all available options. There's two different ways to retrive variants.
-One is to use `-c` and `-p` parameters for single variant, the other way is for multiple positions, which could
-be used by `-l`
+Run `cmdbtools query-variant -h` to see all available options. There're two different ways to retrive variants.
 
-Here is an example for quering single varaint by chromosome name and position.
+One is to use `-c` and `-p` parameters for single variant, the other way uses `-l` for multiple positions.
+
+Here are examples for quering single varaint by chromosome name and position.
 
 ```bash
 cmdbtools query-variant -c chr17 -p 41234470
@@ -101,7 +101,9 @@ and you will get something looks like below:
 17	41234470	rs1060915&CD086610&COSM4416375	A	G	74.38	PASS	CMDB_AF=0.361763,CMDB_AC=4625,CMDB_AN=12757
 ```
 
-For quering multiple varants.
+## Quering multiple varants.
+
+A list of variants could be retrieved from CMDB by using the parameters of `-l` when apply by `query-varaint`.
 
 ```bash
 cmdbtools query-variant -l positions.list > result.vcf
@@ -155,7 +157,7 @@ To annotate this list of variants with allele frequences from CMDB, you can just
 cmdbtools annotate -i multiple_samples.vcf.gz > multiple_samples_CMDB.vcf
 ```
 
-It'll take about 2 or 3 minutes to complete 3,000 variants' annotation. Then you will get 4 new fields with the information of CMDB in VCF INFO:
+It'll take about 2 or 3 minutes to complete 3,000+ variants' annotation. Then you will get 4 new fields with the information of CMDB in VCF INFO:
 
 * `CMDB_AF`: Allele frequece in CMDB;
 * `CMDB_AN`: Coverage in CMDB in population level;
