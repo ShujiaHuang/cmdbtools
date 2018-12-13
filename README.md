@@ -109,7 +109,8 @@ A list of variants could be retrieved from CMDB by using the parameters of `-l` 
 cmdbtools query-variant -l positions.list > result.vcf
 ```
 
-Format for [positions.list](tests/positions.list), could be a mixture of `chrom   position` and `chrom    start   end`:
+Format for [positions.list](tests/positions.list), could be a mixture of `chrom   position` and `chrom    start   end`, even with or without `chr` in the
+chromosome ID column:
 
 ```
 #CHROM  POS
