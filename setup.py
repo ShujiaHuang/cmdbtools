@@ -28,8 +28,6 @@ if __name__ == "__main__":
     long_description = os.path.split(os.path.realpath(__file__))[0] + "/README.rst"
     requirements_file = os.path.split(os.path.realpath(__file__))[0] + "/requirements.txt"
 
-    print "******** %s " % os.path.split(os.path.realpath(__file__))[0]
-
     requirements = []
     with open(requirements_file) as I:
       for line in I:
