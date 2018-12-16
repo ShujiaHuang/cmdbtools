@@ -63,4 +63,4 @@ if __name__ == "__main__":
               'Operating System :: POSIX',
               'Operating System :: POSIX :: Linux',
               'Operating System :: MacOS'],
-          )
+    )
