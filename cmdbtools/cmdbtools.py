@@ -10,7 +10,6 @@ import argparse
 import os
 import sys
 import gzip
-
 import json
 import yaml
 
@@ -95,8 +94,8 @@ def load_version():
     return tokenstore["version"]
 
 
-class requests(object):
-    # this implements the parts we need of the real `requests` module
+class Requests(object):
+    # this implements the parts we need of the real `Requests` module
     @staticmethod
     def get(url, headers={}, params=None):
         if params:
@@ -108,7 +107,7 @@ class requests(object):
         except HTTPError:
             response = None
 
-        return _requests_response(response)
+        return _RequestsResponse(response)
 
     @staticmethod
     def post(url, headers={}, data=None):
@@ -116,10 +115,10 @@ class requests(object):
             data = urlencode(data)
 
         r = Request(url, headers=headers, data=data)
-        return _requests_response(urlopen(r))
+        return _RequestsResponse(urlopen(r))
 
 
-class _requests_response(object):
+class _RequestsResponse(object):
     def __init__(self, response):
 
         if response:
@@ -133,12 +132,12 @@ class _requests_response(object):
         return self._json
 
 
-class _requests_exceptions(object):
+class _RequestsExceptions(object):
     pass
 
 
-requests.exceptions = _requests_exceptions
-requests.exceptions.RequestException = HTTPError
+Requests.exceptions = _RequestsExceptions
+Requests.exceptions.RequestException = HTTPError
 
 
 def authaccess_exists():
@@ -184,7 +183,7 @@ def write_tokenstore(token):
 def login(token):
     # Test the token is available or not
     test_url = "https://db.cngb.org/cmdb/api/v1.0/variant?token={}&type=position&query=chr17-41234470".format(token)
-    cmdb_response = requests.get(test_url)
+    cmdb_response = Requests.get(test_url)
 
     if cmdb_response.status_code != 201:
         raise CMDBException('Error while obtaining your token with CMDB API authentication server.'
@@ -225,7 +224,7 @@ def print_access_token():
 def _query_paged(headers, url):
     page_no = 1
     while url:
-        cmdb_response = requests.get(url, headers=headers)
+        cmdb_response = Requests.get(url, headers=headers)
         if cmdb_response.status_code != 200:
             if cmdb_response.status_code == 400:
                 raise CMDBException(cmdb_response.json().get('error', 'Failed to query data.'))
@@ -247,7 +246,7 @@ def _query_paged(headers, url):
 
 
 def _query_nonpaged(token, url):
-    cmdb_response = requests.get("{}&token={}".format(url, token))
+    cmdb_response = Requests.get("{}&token={}".format(url, token))
     if cmdb_response.status_code != 201:
         if cmdb_response.status_code == 403:
             raise CMDBException(cmdb_response.json().get('error', 'Failed to query data.'))
