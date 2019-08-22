@@ -97,7 +97,7 @@ def load_version():
 class Requests(object):
     # this implements the parts we need of the real `Requests` module
     @staticmethod
-    def get(url, headers={}, params=None):
+    def get(url, headers={'User-Agent': 'Mozilla/5.0'}, params=None):
         if params:
             url += '?' + urlencode(params)
 
@@ -110,7 +110,7 @@ class Requests(object):
         return _RequestsResponse(response)
 
     @staticmethod
-    def post(url, headers={}, data=None):
+    def post(url, headers={'User-Agent': 'Mozilla/5.0'}, data=None):
         if data is not None and isinstance(data, dict):
             data = urlencode(data)
 
