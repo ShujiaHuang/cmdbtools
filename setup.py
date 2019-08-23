@@ -20,7 +20,7 @@ MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/ShujiaHuang/cmdbtools'
-VERSION = "1.0.6"
+VERSION = "1.0.6.1"
 
 
 if __name__ == "__main__":
@@ -46,7 +46,9 @@ if __name__ == "__main__":
           download_url=DOWNLOAD_URL,
           packages=find_packages(),
           include_package_data=True,
-          install_requires=["PyYAML==3.13"],
+          install_requires=[
+            "PyYAML>=5.1.2"
+          ],
 
           # scripts = ['cmdbtools/cmdbtools.py'],
           entry_points = {
