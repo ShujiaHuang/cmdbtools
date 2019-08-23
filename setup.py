@@ -20,18 +20,18 @@ MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/ShujiaHuang/cmdbtools'
-VERSION = "1.0.4"
+VERSION = "1.0.6"
 
 
 if __name__ == "__main__":
 
     long_description = os.path.split(os.path.realpath(__file__))[0] + "/README.rst"
-    requirements_file = os.path.split(os.path.realpath(__file__))[0] + "/requirements.txt"
+    #requirements_file = os.path.split(os.path.realpath(__file__))[0] + "/requirements.txt"
 
-    requirements = []
-    with open(requirements_file) as I:
-      for line in I:
-        requirements.append(line.strip())
+    #requirements = []
+    #with open(requirements_file) as I:
+    #  for line in I:
+    #    requirements.append(line.strip())
 
     setup(name=DISTNAME,
           version=VERSION,
@@ -46,7 +46,7 @@ if __name__ == "__main__":
           download_url=DOWNLOAD_URL,
           packages=find_packages(),
           include_package_data=True,
-          install_requires=requirements,
+          install_requires=["PyYAML==3.13"],
 
           # scripts = ['cmdbtools/cmdbtools.py'],
           entry_points = {
