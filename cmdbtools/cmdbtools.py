@@ -64,7 +64,6 @@ CMDB_TOKENSTORE = 'authaccess.yaml'
 
 CMDB_DATASET_VERSION = 'CMDB_hg19_v1.0'
 CMDB_API_VERSION = 'v1.0'
-#CMDB_API_MAIN_URL = 'https://db.cngb.org/cmdb/api/{}'.format(CMDB_API_VERSION)
 
 CMDB_VCF_HEADER = [
     '##fileformat=VCFv4.2',

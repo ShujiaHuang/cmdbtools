@@ -20,7 +20,7 @@ MAINTAINER_EMAIL = 'huangshujia@bgi.com'
 URL = 'https://github.com/ShujiaHuang/cmdbtools'
 LICENSE = 'BSD (3-clause)'
 DOWNLOAD_URL = 'https://github.com/ShujiaHuang/cmdbtools'
-VERSION = "1.0.6.1"
+VERSION = "1.0.6.2"
 
 
 if __name__ == "__main__":

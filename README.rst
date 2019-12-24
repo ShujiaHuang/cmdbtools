@@ -49,12 +49,6 @@ Install the released version by ``pip``\ :
 
    pip install cmdbtools
 
-You may instead want to install the development version from github, by running:
-
-.. code-block:: bash
-
-   pip install git+git://github.com/ShujiaHuang/cmdbtools.git#egg=cmdbtools
-
 Setup
 -----
 
