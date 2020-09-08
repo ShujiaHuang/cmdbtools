@@ -7,10 +7,12 @@ Date: 2018-11-22
 """
 
 import argparse
-import os
-import sys
 import gzip
 import json
+import os
+import sys
+import stat
+
 import yaml
 
 from datetime import datetime
@@ -88,7 +90,7 @@ class CMDBException(Exception):
 
 def load_version():
     if not authaccess_exists():
-        print "No access tokens found. Please login first.\n"
+        print ("No access tokens found. Please login first.\n")
         return
 
     tokenstore = read_tokenstore()
@@ -148,13 +150,13 @@ def authaccess_exists():
 def create_tokenstore():
     p = os.path.join(USER_HOME, CMDB_DIR)
     if not os.path.isdir(p):
-        os.mkdir(p, 0700)
+        os.mkdir(p, stat.S_IRWXU)  ## 0700
 
     p = os.path.join(p, CMDB_TOKENSTORE)
     if not os.path.isfile(p):
         # create file
         open(p, 'a').close()
-        os.chmod(p, 0600)
+        os.chmod(p, stat.S_IRUSR + stat.S_IWUSR) # 0600
 
 
 def read_tokenstore():
@@ -179,7 +181,7 @@ def write_tokenstore(token, url):
         }
         yaml.dump(token_obj, tokenstore)
 
-    os.chmod(file_path, 0600)
+    os.chmod(file_path, stat.S_IRUSR + stat.S_IWUSR)  # 0600
 
 
 def login(token, url):
