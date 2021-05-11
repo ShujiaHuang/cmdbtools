@@ -49,7 +49,7 @@ this purpose.
 Installation
 ------------
 
-Install the released version by `pip` (Only support Python3):
+Install the released version by `pip` (Only support Python3 since v1.1.0):
 
 ```bash
 pip install cmdbtools
