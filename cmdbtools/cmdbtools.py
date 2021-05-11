@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A command line tools for CMDB variants browser
 
 Author: Shujia Huang
@@ -13,52 +12,14 @@ import os
 import sys
 import stat
 
+if sys.version_info.major != 3:
+    raise Exception('cmdbtools supports only Python3.7+ and no longer supports Python2')
+
 import yaml
 
 from datetime import datetime
-from urllib import urlencode
-from urllib2 import Request, urlopen, HTTPError
-
-if sys.version_info.major != 2:
-    raise Exception('This tool supports only python2')
-
-argparser = argparse.ArgumentParser(description='Manage authentication for CMDB API and do querying from command line.')
-commands = argparser.add_subparsers(dest='command', title='Commands')
-
-login_command = commands.add_parser('login', help='Authorize access to CMDB API.')
-logout_command = commands.add_parser('logout', help='Logout CMDB.')
-token_command = commands.add_parser('print-access-token', help='Display access token for CMDB API.')
-
-login_command.add_argument('-k', '--token', type=str, required=True, dest='token',
-                           help='CMDB API access key(Token).')
-login_command.add_argument('--url', type=str, dest='cmdb_url', default='http://cmdb.bgi.com',
-                           help='The web url of CMDB. [http://cmdb.bgi.com].')
-
-annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
-                                       description='Input VCF file. Multi-allelic variant records in input VCF must be '
-                                                   'split into multiple bi-allelic variant records.')
-annotate_command.add_argument('-i', '--vcffile', metavar='VCF_FILE', type=str, required=True, dest='in_vcffile',
-                              help='input VCF file.')
-
-query_variant_command = commands.add_parser('query-variant',
-                                            help='Query variant by variant identifier or by chromosome name and '
-                                                 'chromosomal position.',
-                                            description='Query variant by identifier chromosome name and chromosomal '
-                                                        'position.')
-query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome',
-                                   help='Chromosome name.', default=None)
-query_variant_command.add_argument('-p', '--position', metavar='genome-position', type=int, dest='position',
-                                   help='Genome position.', default=None)
-query_variant_command.add_argument('-l', '--positions', metavar='File-contain-a-list-of-genome-positions',
-                                   type=str, dest='positions',
-                                   help='Genome positions list in a file. One for each line. You can input single '
-                                        'position by -c and -p or using -l for multiple poisitions in a single file, '
-                                        'could be .gz file',
-                                   default=None)
-# query_variant_command.add_argument('-v', '--variant', metavar='chrom-pos-ref-alt/rs#', type=str, dest='variant_id',
-#                                    help='Variant identifier CHROM-POS-REF-ALT or rs#.')
-# query_variant_command.add_argument('-o', '--output', required=False, choices=['json', 'vcf'], default='json',
-#                                    dest='format', help='Output format.')
+from urllib.request import Request, urlopen, HTTPError
+from urllib.parse import urlencode
 
 USER_HOME = os.path.expanduser("~")
 CMDB_DIR = '.cmdb'
@@ -74,7 +35,8 @@ CMDB_VCF_HEADER = [
         CMDB_DATASET_VERSION),
     '##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from {}">'.format(
         CMDB_DATASET_VERSION),
-    '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">'.format(CMDB_DATASET_VERSION),
+    '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">'.format(
+        CMDB_DATASET_VERSION),
     '##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from {}">'.format(CMDB_DATASET_VERSION),
     '#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO'
 ]
@@ -90,7 +52,7 @@ class CMDBException(Exception):
 
 def load_version():
     if not authaccess_exists():
-        print ("No access tokens found. Please login first.\n")
+        print("No access tokens found. Please login first.\n")
         return
 
     tokenstore = read_tokenstore()
@@ -100,7 +62,11 @@ def load_version():
 class Requests(object):
     # this implements the parts we need of the real `Requests` module
     @staticmethod
-    def get(url, headers={'User-Agent': 'Mozilla/5.0'}, params=None):
+    def get(url, headers=None, params=None):
+
+        if headers is None:
+            headers = {'User-Agent': 'Mozilla/5.0'}
+
         if params:
             url += '?' + urlencode(params)
 
@@ -113,12 +79,16 @@ class Requests(object):
         return _RequestsResponse(response)
 
     @staticmethod
-    def post(url, headers={'User-Agent': 'Mozilla/5.0'}, data=None):
+    def post(url, headers=None, data=None):
+
+        if headers is None:
+            headers = {'User-Agent': 'Mozilla/5.0'}
+
         if data is not None and isinstance(data, dict):
             data = urlencode(data)
 
         r = Request(url, headers=headers, data=data)
-        return _RequestsResponse(urlopen(r))
+        return _RequestsResponse(urlopen(r))  # `raise_for_status` in urlopen(r)
 
 
 class _RequestsResponse(object):
@@ -156,16 +126,16 @@ def create_tokenstore():
     if not os.path.isfile(p):
         # create file
         open(p, 'a').close()
-        os.chmod(p, stat.S_IRUSR + stat.S_IWUSR) # 0600
+        os.chmod(p, stat.S_IRUSR + stat.S_IWUSR)  # 0600
 
 
 def read_tokenstore():
     token_path = os.path.join(USER_HOME, CMDB_DIR, CMDB_TOKENSTORE)
     with open(token_path, 'r') as I:
-        tokenstore = yaml.load(I)
+        tokenstore = yaml.load(I, Loader=yaml.FullLoader)
 
         access_token = tokenstore.get('access_token', None)
-        if access_token is None or not isinstance(access_token, basestring):
+        if access_token is None or not isinstance(access_token, str):
             raise CMDBException('Invalid or outdated access token. You may need to run login.')
 
         return tokenstore
@@ -216,14 +186,13 @@ def logout():
 
 
 def print_access_token():
-
     if not authaccess_exists():
         sys.stderr.write('No access tokens found. Print nothing.\n')
         return
 
     tokenstore = read_tokenstore()
-    print (tokenstore['url'])
-    print (tokenstore['access_token'])
+    print(tokenstore['url'])
+    print(tokenstore['access_token'])
 
 
 def _query_paged(headers, url):
@@ -277,33 +246,31 @@ def query_variant(chromosome, position):
     return _query_nonpaged(tokenstore["access_token"], query_url)
 
 
-def annotate(infile, filter=None):
+def annotate(infile):
     if not authaccess_exists():
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
     data_version = load_version()
     with gzip.open(infile) if infile.endswith('.gz') else open(infile) as I:
-
         for in_line in I:
-
+            in_line = in_line.decode("UTF-8")
             if in_line.startswith('#'):
                 if in_line.startswith('##'):
                     sys.stdout.write('{}\n'.format(in_line.rstrip()))
 
                 elif in_line.startswith('#CHROM'):
-
                     sys.stdout.write(
-                        '##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples with Coverage from {}">\n'.format(
-                            data_version))
+                        '##INFO=<ID=CMDB_AN,Number=1,Type=Integer,Description="Number of Alleles in Samples '
+                        'with Coverage from {}">\n'.format(data_version))
                     sys.stdout.write(
-                        '##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in Samples with Coverage from {}">\n'.format(
-                            data_version))
+                        '##INFO=<ID=CMDB_AC,Number=A,Type=Integer,Description="Alternate Allele Counts in '
+                        'Samples with Coverage from {}">\n'.format(data_version))
                     sys.stdout.write(
-                        '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies from {}">\n'.format(
-                            data_version))
+                        '##INFO=<ID=CMDB_AF,Number=A,Type=Float,Description="Alternate Allele Frequencies '
+                        'from {}">\n'.format(data_version))
                     sys.stdout.write(
-                        '##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter from {}">\n'.format(
-                            data_version))
+                        '##INFO=<ID=CMDB_FILTER,Number=A,Type=Float,Description="Filter '
+                        'from {}">\n'.format(data_version))
                     sys.stdout.write('{}\n'.format(in_line.rstrip()))
 
                 continue
@@ -359,7 +326,6 @@ def annotate(infile, filter=None):
 
 
 def run_query_variant(positions):
-
     if not authaccess_exists():
         raise CMDBException('[ERROR] No access tokens found. Please login first.\n')
 
@@ -390,10 +356,47 @@ def run_query_variant(positions):
 
 def main():
     # entry function
-
     START_TIME = datetime.now()
+    argparser = argparse.ArgumentParser(
+        description='Manage authentication for CMDB API and do querying from command line.')
+    commands = argparser.add_subparsers(dest='command', title='Commands')
 
+    login_command = commands.add_parser('login', help='Authorize access to CMDB API.')
+    logout_command = commands.add_parser('logout', help='Logout CMDB.')
+    token_command = commands.add_parser('print-access-token', help='Display access token for CMDB API.')
+
+    login_command.add_argument('-k', '--token', type=str, required=True, dest='token',
+                               help='CMDB API access key(Token).')
+    login_command.add_argument('--url', type=str, dest='cmdb_url', default='http://cmdb.bgi.com',
+                               help='The web url of CMDB. [http://cmdb.bgi.com].')
+
+    annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
+                                           description='Input VCF file. Multi-allelic variant records in input VCF must be '
+                                                       'split into multiple bi-allelic variant records.')
+    annotate_command.add_argument('-i', '--vcffile', metavar='VCF_FILE', type=str, required=True, dest='in_vcffile',
+                                  help='input VCF file.')
+
+    query_variant_command = commands.add_parser('query-variant',
+                                                help='Query variant by variant identifier or by chromosome name and '
+                                                     'chromosomal position.',
+                                                description='Query variant by identifier chromosome name and chromosomal '
+                                                            'position.')
+    query_variant_command.add_argument('-c', '--chromosome', metavar='name', type=str, dest='chromosome',
+                                       help='Chromosome name.', default=None)
+    query_variant_command.add_argument('-p', '--position', metavar='genome-position', type=int, dest='position',
+                                       help='Genome position.', default=None)
+    query_variant_command.add_argument('-l', '--positions', metavar='File-contain-a-list-of-genome-positions',
+                                       type=str, dest='positions',
+                                       help='Genome positions list in a file. One for each line. You can input single '
+                                            'position by -c and -p or using -l for multiple poisitions in a single file, '
+                                            'could be .gz file',
+                                       default=None)
+    # query_variant_command.add_argument('-v', '--variant', metavar='chrom-pos-ref-alt/rs#', type=str, dest='variant_id',
+    #                                    help='Variant identifier CHROM-POS-REF-ALT or rs#.')
+    # query_variant_command.add_argument('-o', '--output', required=False, choices=['json', 'vcf'], default='json',
+    #                                    dest='format', help='Output format.')
     args = argparser.parse_args()
+
     try:
         if args.command == 'login':
             login(args.token, args.cmdb_url.strip("/"))
@@ -437,29 +440,27 @@ def main():
 
                         elif len(col) == 3:
                             start, end = map(int, col[1:])
-                            for position in range(start, end+1):
+                            for position in range(start, end + 1):
                                 positions.append([col[0], position])
                         else:
                             sys.stderr.write("[Error] Unexpected format hit %s in %s.\n" % (line, args.positions))
 
             # sorted and query positions
-            positions.sort(key=lambda A:(A[0], A[1]))
+            positions.sort(key=lambda A: (A[0], A[1]))
             run_query_variant(positions)
 
         elif args.command == 'query-variants':
             pass
 
         elif args.command == 'annotate':
-            annotate(args.in_vcffile, filter=None)
+            annotate(args.in_vcffile)
 
     except CMDBException as e:
-        print (e)
+        print(e)
 
-
-    elasped_time = datetime.now() -START_TIME
+    elasped_time = datetime.now() - START_TIME
     sys.stderr.write("** Query CMDB done, %d seconds elapsed **\n" % (elasped_time.seconds))
 
 
 if __name__ == '__main__':
     main()
-
