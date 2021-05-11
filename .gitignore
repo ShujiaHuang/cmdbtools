@@ -1,4 +1,6 @@
 .DS_Store
+README.rst
+*.sh
 
 .idea/
 tmp/
