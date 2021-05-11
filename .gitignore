@@ -6,6 +6,7 @@ README.rst
 tmp/
 venv/
 
+__pycache__/
 *.egg-info/
 build/
 dist/
