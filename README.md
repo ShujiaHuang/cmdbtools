@@ -1,6 +1,9 @@
 cmdbtools: A command line tools for CMDB varaints browser
 =========================================================
 
+[![PyPI Version](https://img.shields.io/pypi/v/cmdbtools.svg)](https://pypi.org/project/cmdbtools/)
+[![License](https://img.shields.io/pypi/l/cmdbtools.svg)](https://github.com/ShujiaHuang/cmdbtools/blob/master/LICENSE)
+
 Introduction
 ------------
 
