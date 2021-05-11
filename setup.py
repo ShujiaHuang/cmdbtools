@@ -22,11 +22,11 @@ meta = Namespace(
     __URL__="https://github.com/ShujiaHuang/cmdbtools",
     __LICENSE__="BSD (3-clause)",
     __DOWNLOAD_URL__="https://github.com/ShujiaHuang/cmdbtools",
-    __VERSION__="1.1.0",
+    __VERSION__="1.1.1",
 )
 
 if __name__ == "__main__":
-    long_description = os.path.split(os.path.realpath(__file__))[0] + "/README.rst"
+    long_description = os.path.split(os.path.realpath(__file__))[0] + "/README.md"
 
     setup(name=meta.__DISTNAME__,
           version=meta.__VERSION__,
@@ -36,6 +36,7 @@ if __name__ == "__main__":
           maintainer_email=meta.__AUTHOR_EMAIL__,
           description=DESCRIPTION,
           long_description=(open(long_description).read()),
+          long_description_content_type="text/markdown",
           license=meta.__LICENSE__,
           url=meta.__URL__,
           download_url=meta.__URL__,
