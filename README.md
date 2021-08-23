@@ -162,8 +162,7 @@ chr22   17669245    rs116020027 G   T   30.3    PASS    CMDB_AF=0.003453,CMDB_AC
 chr22   17690409    rs362129    G   A   32.3    PASS    CMDB_AF=0.065438,CMDB_AC=686,CMDB_AN=10236
 ```
 
-Actrually you can use `-c` `-p` and `-l` simultaneously if you like. And
-`positions.list` could just contain one single position.
+You can even use `-c` `-p` and `-l` simultaneously if you like.
 
 ```bash
 cmdbtools query-variant -c 22 -p 46616520 -l positions.list > result.vcf
@@ -183,7 +182,7 @@ the following command in Linux or Mac OS.
 cmdbtools annotate -i multiple_samples.vcf.gz > multiple_samples_CMDB.vcf
 ```
 
-It\'ll take about 2 or 3 minutes to complete 3,000+ variants\'
+It\'ll take about 2 ~ 3 minutes to complete 3,000+ variants\'
 annotation. Then you will get 4 new fields with the information of CMDB
 in VCF INFO:
 
