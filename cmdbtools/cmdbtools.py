@@ -275,7 +275,7 @@ def annotate(infile):
 
                 continue
 
-            in_fields = in_line.rstrip().split()
+            in_fields = in_line.strip().split()
             if 'chr' not in in_fields[0].lower():
                 in_fields[0] = 'chr' + in_fields[0].lower()
 
