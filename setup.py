@@ -22,7 +22,7 @@ meta = Namespace(
     __URL__="https://github.com/ShujiaHuang/cmdbtools",
     __LICENSE__="BSD (3-clause)",
     __DOWNLOAD_URL__="https://github.com/ShujiaHuang/cmdbtools",
-    __VERSION__="1.1.2",
+    __VERSION__="1.1.3",
 )
 
 if __name__ == "__main__":
