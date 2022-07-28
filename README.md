@@ -227,7 +227,8 @@ Citation
 **If you use CMDB in your scientific publication, we would appreciate cite these papers:**
 
 
-- Siyang Liu, Shujia Huang. et al. “Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, Patterns of Viral Infections, and Chinese Population History.” *Cell* vol. 175,2 (2018): 347-359.e14. [doi:10.1016/j.cell.2018.08.016](https://doi.org/10.1016/j.cell.2018.08.016)
+- Siyang Liu, Shujia Huang. et al. “Genomic Analyses from Non-invasive Prenatal Testing Reveal Genetic Associations, Patterns of Viral Infections, and Chinese Population History.” *Cell*, vol. 175,2 (2018): 347-359.e14. [doi:10.1016/j.cell.2018.08.016](https://doi.org/10.1016/j.cell.2018.08.016)
 
 
 - Zhichao Li, Xiaosen Jiang, Mingyan Fang, Yong Bai, Siyang Liu, Shujia Huang, Xin Jin, CMDB: the comprehensive population genome variation database of China, *Nucleic Acids Research*, 2022;, gkac638, [https://doi.org/10.1093/nar/gkac638](https://doi.org/10.1093/nar/gkac638)
+
