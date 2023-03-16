@@ -367,8 +367,8 @@ def main():
 
     login_command.add_argument('-k', '--token', type=str, required=True, dest='token',
                                help='CMDB API access key(Token).')
-    login_command.add_argument('--url', type=str, dest='cmdb_url', default='https://db.cngb.org/cmdb',
-                               help='The web url of CMDB. [https://db.cngb.org/cmdb].')
+    login_command.add_argument('--url', type=str, dest='cmdb_url', default='http://cmdb.bgi.com',
+                               help='The web url of CMDB. [http://cmdb.bgi.com].')
 
     annotate_command = commands.add_parser('annotate', help='Annotate input VCF.',
                                            description='Input VCF file. Multi-allelic variant records in input VCF must be '
